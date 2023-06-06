@@ -284,7 +284,7 @@ SELECT * FROM collection_cycles_reports
 
 -- DELETE FROM collection_cycles_reports
 
-SELECT ctr.name AS country, id.name AS industry, w.name AS waste, (wo.base_cost * ccr.collected_amount) + ct.collection_cost AS operation_cost, ct.subtotal_cost + (ct.[non-compliance_fee] * ABS(ccr.collected_amount - ct.waste_quantity)) AS payment, (ct.subtotal_cost + (ct.[non-compliance_fee] * ABS(ccr.collected_amount - ct.waste_quantity)) - (wo.base_cost * ccr.collected_amount) + ct.collection_cost) AS profit, ccr.created_at AS date
+SELECT ctr.name AS country, id.name AS industry, wt.name AS waste_type, (wo.base_cost * ccr.collected_amount) + ct.collection_cost AS operation_cost, ct.subtotal_cost + (ct.[non-compliance_fee] * ABS(ccr.collected_amount - ct.waste_quantity)) AS payment, (ct.subtotal_cost + (ct.[non-compliance_fee] * ABS(ccr.collected_amount - ct.waste_quantity)) - (wo.base_cost * ccr.collected_amount) + ct.collection_cost) AS profit, ccr.created_at AS date
 FROM collection_cycles_reports ccr
 JOIN collection_cycles cc ON ccr.collection_cycle_id = cc.collection_cycle_id
 JOIN contract_terms ct ON cc.collection_cycle_id = ct.collection_cycle_id
@@ -296,6 +296,7 @@ JOIN [state/provinces] sp ON c.[state/province_id] = sp.[state/province_id]
 JOIN countries ctr ON sp.country_id = ctr.country_id
 JOIN waste_operations wo ON ct.waste_operation_id = wo.waste_operation_id
 JOIN wastes w ON ccr.waste_id = w.waste_id
+JOIN waste_types wt ON w.waste_type_id = wt.waste_type_id
 JOIN industries id ON p.industry_id = id.industry_id
 ORDER BY ctr.name ASC, id.name ASC, w.name ASC, (ct.subtotal_cost - (wo.base_cost * ccr.collected_amount)) DESC;
 
