@@ -1,0 +1,42 @@
+LOAD CSV WITH HEADERS FROM 'file:///city_recolection_select.csv' AS row
+MERGE (ev_sites:Ev_sites {recolection_site: row.recolection_site})
+MERGE (collection:Collection {total_ammount_collected: toInteger(row.total_ammount_collected)})
+MERGE (district:District {collection_site_district: row.collection_site_district})
+MERGE (address:Address {zip_code: row.zip_code})
+MERGE (ev_sites)-[:HAVE]->(district)
+MERGE (ev_sites)-[:HAVE]->(address)
+MERGE (collection)-[:IS_DONE_OVER]->(ev_sites)
+
+LOAD CSV WITH HEADERS FROM 'file:///location_recolection_select.csv' AS row
+MERGE (ev_sites:Ev_sites {recolection_site: row.recolection_site})
+MERGE (collection:Collection {total_ammount_collected: toInteger(row.total_ammount_collected)})
+MERGE (route:Route {route_name: row.route_name})
+MERGE (collection)-[:HAVE]->(route)
+MERGE (collection)-[:IS_DONE_OVER]->(ev_sites)
+
+LOAD CSV WITH HEADERS FROM 'file:///producer_recolection_select.csv' AS row
+MERGE (ev_sites:Ev_sites {recolection_site: row.recolection_site})
+MERGE (collection:Collection {total_ammount_collected: toInteger(row.total_ammount_collected)})
+MERGE (producer:Producer {producer: row.producer})
+MERGE (producer)-[:GETS]->(collection)
+MERGE (producer)-[:SENDS_WASTES_TO]->(ev_sites)
+MERGE (collection)-[:IS_DONE_OVER]->(ev_sites)
+
+LOAD CSV WITH HEADERS FROM 'file:///alternative_collector_recolection_select.csv' AS row
+MERGE (ev_sites:Ev_sites {recolection_site: row.recolection_site})
+MERGE (collection:Collection {total_ammount_collected: toInteger(row.total_ammount_collected)})
+MERGE (alt_collector:Alternative_collector {alternative_collector: row.alternative_collector})
+MERGE (collection)-[:IS_DONE_BY]->(Alternative_collector)
+MERGE (collection)-[:IS_DONE_OVER]->(ev_sites)
+
+LOAD CSV WITH HEADERS FROM 'file:///ev_collector_recolection_select.csv' AS row
+MERGE (ev_sites:Ev_sites {recolection_site: row.recolection_site})
+MERGE (collection:Collection {total_ammount_collected: toInteger(row.total_ammount_collected)})
+MERGE (ev_collector:Esencial_verde_collector {esencial_verde_collector: row.esencial_verde_collector})
+MERGE (collection)-[:IS_DONE_BY]->(esencial_verde_collector)
+MERGE (collection)-[:IS_DONE_OVER]->(ev_sites)
+
+
+
+
+
